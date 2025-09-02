@@ -13,9 +13,6 @@ docker run -it --rm -p 8000:8000 \
   --dtype float16 --api-key supersecretkey
 ```
 
-```bash
-      docker run -it --rm -p 8000:8000   --env "HUGGING_FACE_HUB_TOKEN=hf_xxx"   -v ~/.cache/huggingface:/root/.cache/huggingface   vllm-cpu   --model meta-llama/Llama-3.2-1B-Instruct   --dtype float16   --api-key supersecretkey
-```
 ### 2. Start the Gateway
 
 ```bash
