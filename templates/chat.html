@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat with AI - vLLM Gateway</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body class="bg-gradient-to-br from-slate-50 to-blue-50">
+    <div class="min-h-screen">
+        <!-- Navigation -->
+        <nav class="bg-white/80 backdrop-blur-md shadow-lg">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="flex justify-between h-16">
+                    <div class="flex items-center">
+                        <div class="flex items-center space-x-2">
+                            <div class="w-8 h-8 bg-gradient-to-r from-blue-600 to-purple-600 rounded-lg flex items-center justify-center">
+                                <i class="fas fa-robot text-white text-lg"></i>
+                            </div>
+                            <h1 class="text-xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+                                vLLM Gateway
+                            </h1>
+                        </div>
+                    </div>
+                    <div class="flex items-center space-x-4">
+                        <a href="/" class="text-gray-600 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium">
+                            <i class="fas fa-home mr-2"></i>Home
+                        </a>
+                        <a href="/dashboard" class="text-gray-600 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium">
+                            <i class="fas fa-tachometer-alt mr-2"></i>Dashboard
+                        </a>
+                        <a href="/api/keys" class="text-gray-600 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium">
+                            <i class="fas fa-key mr-2"></i>API Keys
+                        </a>
+                        <a href="/chat" class="text-blue-600 bg-blue-50 px-3 py-2 rounded-md text-sm font-medium">
+                            <i class="fas fa-comments mr-2"></i>Chat
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </nav>
+
+        <!-- Main Content -->
+        <main class="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
+            <!-- Chat Interface -->
+            <div class="px-4 py-6 sm:px-0">
+                <div class="bg-white/80 backdrop-blur-sm overflow-hidden shadow-xl rounded-2xl border border-white/20">
+                    <div class="px-6 py-8">
+                        <div class="flex items-center space-x-3 mb-6">
+                            <div class="w-12 h-12 bg-gradient-to-r from-green-600 to-blue-600 rounded-xl flex items-center justify-center">
+                                <i class="fas fa-comments text-white text-xl"></i>
+                            </div>
+                            <div>
+                                <h2 class="text-2xl font-bold text-gray-900">AI Chat Interface</h2>
+                                <p class="text-gray-600">Chat with your AI models through the gateway</p>
+                            </div>
+                        </div>
+
+                        <!-- Configuration -->
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">API Key</label>
+                                <input id="apiKey" type="password" placeholder="Enter your API key" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                <p class="text-xs text-gray-500 mt-1">Get your API key from the <a href="/api/keys" class="text-blue-600 hover:text-blue-800">API Keys</a> page</p>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Model</label>
+                                <select id="modelSelect" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                    <option value="">Enter API key to load models</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Max Tokens</label>
+                                <input id="maxTokens" type="number" value="1000" min="1" max="4000" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                            </div>
+                        </div>
+
+                        <!-- Chat Messages -->
+                        <div id="chatMessages" class="space-y-4 mb-6 max-h-96 overflow-y-auto border border-gray-200 rounded-lg p-4 bg-gray-50">
+                            <div class="text-center text-gray-500">
+                                <i class="fas fa-comments text-2xl mb-2"></i>
+                                <p>Start a conversation by entering your API key and typing a message below</p>
+                            </div>
+                        </div>
+
+                        <!-- Message Input -->
+                        <div class="flex space-x-4">
+                            <input id="messageInput" type="text" placeholder="Type your message here..." class="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                            <button id="sendButton" onclick="sendMessage()" class="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed">
+                                <i class="fas fa-paper-plane mr-2"></i>Send
+                            </button>
+                        </div>
+
+                        <!-- Clear Chat Button -->
+                        <div class="mt-4">
+                            <button onclick="clearChat()" class="px-4 py-2 border border-gray-300 text-gray-700 rounded-md hover:bg-gray-50">
+                                <i class="fas fa-trash mr-2"></i>Clear Chat
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        let availableModels = [];
+        let isLoading = false;
+
+        // Load models when API key is entered
+        document.getElementById('apiKey').addEventListener('input', function() {
+            const apiKey = this.value.trim();
+            if (apiKey) {
+                loadModels(apiKey);
+            } else {
+                const modelSelect = document.getElementById('modelSelect');
+                modelSelect.innerHTML = '<option value="">Enter API key to load models</option>';
+            }
+        });
+
+        async function loadModels(apiKey) {
+            try {
+                const response = await fetch('/v1/models', {
+                    headers: {
+                        'x-api-key': apiKey
+                    }
+                });
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    availableModels = data.data || [];
+                    
+                    const modelSelect = document.getElementById('modelSelect');
+                    modelSelect.innerHTML = '<option value="">Select a model</option>';
+                    
+                    availableModels.forEach(model => {
+                        const option = document.createElement('option');
+                        option.value = model.id;
+                        option.textContent = model.id;
+                        modelSelect.appendChild(option);
+                    });
+                    
+                    console.log('Models loaded successfully:', availableModels);
+                } else {
+                    console.error('Failed to load models:', response.status);
+                    const modelSelect = document.getElementById('modelSelect');
+                    modelSelect.innerHTML = '<option value="">Error loading models</option>';
+                }
+            } catch (error) {
+                console.error('Error loading models:', error);
+                const modelSelect = document.getElementById('modelSelect');
+                modelSelect.innerHTML = '<option value="">Error loading models</option>';
+            }
+        }
+
+        async function sendMessage() {
+            const apiKey = document.getElementById('apiKey').value.trim();
+            const selectedModel = document.getElementById('modelSelect').value;
+            const messageInput = document.getElementById('messageInput');
+            const newMessage = messageInput.value.trim();
+            const maxTokens = document.getElementById('maxTokens').value;
+            const sendButton = document.getElementById('sendButton');
+
+            // Validation
+            if (!newMessage) {
+                alert('Please enter a message');
+                return;
+            }
+            if (!apiKey) {
+                alert('Please enter your API key');
+                return;
+            }
+            if (!selectedModel) {
+                alert('Please select a model');
+                return;
+            }
+            if (isLoading) return;
+
+            // Add user message to chat
+            addMessage('user', newMessage);
+            messageInput.value = '';
+            
+            // Disable send button and show loading
+            sendButton.disabled = true;
+            isLoading = true;
+            sendButton.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Sending...';
+
+            try {
+                console.log('Sending message:', {
+                    model: selectedModel,
+                    message: newMessage,
+                    maxTokens: maxTokens
+                });
+
+                const response = await fetch('/v1/chat/completions', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'x-api-key': apiKey
+                    },
+                    body: JSON.stringify({
+                        model: selectedModel,
+                        messages: [
+                            { role: 'user', content: newMessage }
+                        ],
+                        max_tokens: parseInt(maxTokens),
+                        temperature: 0.7
+                    })
+                });
+
+                console.log('Response status:', response.status);
+
+                if (response.ok) {
+                    const data = await response.json();
+                    console.log('Response data:', data);
+                    
+                    if (data.choices && data.choices[0] && data.choices[0].message) {
+                        const aiResponse = data.choices[0].message.content;
+                        addMessage('assistant', aiResponse);
+                    } else {
+                        addMessage('assistant', 'Error: Unexpected response format from AI');
+                    }
+                } else {
+                    const errorData = await response.json().catch(() => ({ detail: 'Unknown error' }));
+                    console.error('Error response:', errorData);
+                    addMessage('assistant', `Error: ${errorData.detail || 'Failed to get response'}`);
+                }
+            } catch (error) {
+                console.error('Error sending message:', error);
+                addMessage('assistant', 'Error: Failed to connect to the server');
+            } finally {
+                // Re-enable send button
+                sendButton.disabled = false;
+                isLoading = false;
+                sendButton.innerHTML = '<i class="fas fa-paper-plane mr-2"></i>Send';
+            }
+        }
+
+        function addMessage(role, content) {
+            const chatMessages = document.getElementById('chatMessages');
+            
+            // Clear the initial message if it's the first real message
+            if (chatMessages.children.length === 1 && chatMessages.children[0].classList.contains('text-center')) {
+                chatMessages.innerHTML = '';
+            }
+            
+            const messageDiv = document.createElement('div');
+            messageDiv.className = 'flex ' + (role === 'user' ? 'justify-end' : 'justify-start');
+            
+            const messageBubble = document.createElement('div');
+            messageBubble.className = 'max-w-xs lg:max-w-md px-4 py-2 rounded-lg ' + 
+                (role === 'user' ? 'bg-blue-600 text-white' : 'bg-white text-gray-900 border border-gray-200');
+            
+            const roleLabel = document.createElement('div');
+            roleLabel.className = 'text-xs font-medium ' + 
+                (role === 'user' ? 'text-blue-100' : 'text-gray-500');
+            roleLabel.textContent = role === 'user' ? 'You' : 'AI';
+            
+            const messageContent = document.createElement('div');
+            messageContent.className = 'mt-1 whitespace-pre-wrap';
+            messageContent.textContent = content;
+            
+            messageBubble.appendChild(roleLabel);
+            messageBubble.appendChild(messageContent);
+            messageDiv.appendChild(messageBubble);
+            
+            chatMessages.appendChild(messageDiv);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+
+        function clearChat() {
+            const chatMessages = document.getElementById('chatMessages');
+            chatMessages.innerHTML = `
+                <div class="text-center text-gray-500">
+                    <i class="fas fa-comments text-2xl mb-2"></i>
+                    <p>Start a conversation by entering your API key and typing a message below</p>
+                </div>
+            `;
+        }
+
+        // Allow Enter key to send message
+        document.getElementById('messageInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                sendMessage();
+            }
+        });
+    </script>
+</body>
+</html>

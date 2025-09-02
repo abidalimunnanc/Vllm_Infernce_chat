@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>vLLM Gateway - Secure AI Model Access</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body class="bg-gradient-to-br from-slate-50 to-blue-50">
+    <div id="app" class="min-h-screen">
+        <!-- Navigation -->
+        <nav class="bg-white/80 backdrop-blur-md shadow-lg sticky top-0 z-50">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="flex justify-between h-16">
+                    <div class="flex items-center">
+                        <div class="flex-shrink-0">
+                            <div class="flex items-center space-x-2">
+                                <div class="w-8 h-8 bg-gradient-to-r from-blue-600 to-purple-600 rounded-lg flex items-center justify-center">
+                                    <i class="fas fa-robot text-white text-lg"></i>
+                                </div>
+                                <h1 class="text-xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+                                    vLLM Gateway
+                                </h1>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="flex items-center space-x-4">
+                        <a href="/" class="text-blue-600 bg-blue-50 px-3 py-2 rounded-md text-sm font-medium">Home</a>
+                        <a href="/dashboard" class="text-gray-600 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium">Dashboard</a>
+                        <a href="/api/keys" class="text-gray-600 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium">API Keys</a>
+                        <a href="/chat" class="text-gray-600 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium">Chat</a>
+                        <a href="/docs" class="bg-blue-600 text-white px-4 py-2 rounded-md text-sm font-medium hover:bg-blue-700 transition-colors">
+                            Get Started
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </nav>
+
+        <!-- Hero Section -->
+        <section class="relative overflow-hidden">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24">
+                <div class="text-center">
+                    <h1 class="text-5xl md:text-6xl font-bold text-gray-900 mb-6">
+                        Secure Access to
+                        <span class="bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+                            AI Models
+                        </span>
+                    </h1>
+                    <p class="text-xl text-gray-600 mb-8 max-w-3xl mx-auto">
+                        Enterprise-grade gateway that protects your vLLM infrastructure while providing controlled access to clients through secure API keys.
+                    </p>
+                    <div class="flex flex-col sm:flex-row gap-4 justify-center">
+                        <a href="/dashboard" class="bg-blue-600 text-white px-8 py-4 rounded-lg text-lg font-semibold hover:bg-blue-700 transition-all transform hover:scale-105 shadow-lg">
+                            <i class="fas fa-rocket mr-2"></i>
+                            Launch Dashboard
+                        </a>
+                        <a href="/chat" class="bg-white text-blue-600 px-8 py-4 rounded-lg text-lg font-semibold hover:bg-gray-50 transition-all border-2 border-blue-600">
+                            <i class="fas fa-comments mr-2"></i>
+                            Try Chat
+                        </a>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Floating Elements -->
+            <div class="absolute top-20 left-10 w-20 h-20 bg-blue-200 rounded-full opacity-20 animate-bounce"></div>
+            <div class="absolute top-40 right-20 w-16 h-16 bg-purple-200 rounded-full opacity-20 animate-bounce" style="animation-delay: 1s;"></div>
+            <div class="absolute bottom-20 left-1/4 w-12 h-12 bg-green-200 rounded-full opacity-20 animate-bounce" style="animation-delay: 2s;"></div>
+        </section>
+
+        <!-- Features Section -->
+        <section class="py-24 bg-white">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="text-center mb-16">
+                    <h2 class="text-3xl font-bold text-gray-900 mb-4">Why Choose vLLM Gateway?</h2>
+                    <p class="text-xl text-gray-600">Built for production with enterprise-grade security and ease of use</p>
+                </div>
+                
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                    <!-- Feature 1 -->
+                    <div class="text-center p-6 rounded-xl hover:shadow-lg transition-all">
+                        <div class="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                            <i class="fas fa-shield-alt text-blue-600 text-2xl"></i>
+                        </div>
+                        <h3 class="text-xl font-semibold text-gray-900 mb-2">Secure by Design</h3>
+                        <p class="text-gray-600">Your vLLM API keys are never exposed. Each client gets their own secure access key.</p>
+                    </div>
+                    
+                    <!-- Feature 2 -->
+                    <div class="text-center p-6 rounded-xl hover:shadow-lg transition-all">
+                        <div class="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                            <i class="fas fa-tachometer-alt text-green-600 text-2xl"></i>
+                        </div>
+                        <h3 class="text-xl font-semibold text-gray-900 mb-2">Rate Limiting</h3>
+                        <p class="text-gray-600">Advanced rate limiting per API key with daily quotas and usage tracking.</p>
+                    </div>
+                    
+                    <!-- Feature 3 -->
+                    <div class="text-center p-6 rounded-xl hover:shadow-lg transition-all">
+                        <div class="w-16 h-16 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                            <i class="fas fa-chart-line text-purple-600 text-2xl"></i>
+                        </div>
+                        <h3 class="text-xl font-semibold text-gray-900 mb-2">Usage Analytics</h3>
+                        <p class="text-gray-600">Monitor API usage, track tokens, and analyze client behavior in real-time.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- How It Works Section -->
+        <section class="py-24 bg-gray-50">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="text-center mb-16">
+                    <h2 class="text-3xl font-bold text-gray-900 mb-4">How It Works</h2>
+                    <p class="text-xl text-gray-600">Simple, secure, and scalable architecture</p>
+                </div>
+                
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+                    <div class="text-center">
+                        <div class="w-16 h-16 bg-blue-600 rounded-full flex items-center justify-center mx-auto mb-4 text-white text-2xl font-bold">1</div>
+                        <h3 class="text-lg font-semibold text-gray-900 mb-2">Deploy vLLM</h3>
+                        <p class="text-gray-600">Run your vLLM models with your secret API key</p>
+                    </div>
+                    
+                    <div class="text-center">
+                        <div class="w-16 h-16 bg-blue-600 rounded-full flex items-center justify-center mx-auto mb-4 text-white text-2xl font-bold">2</div>
+                        <h3 class="text-lg font-semibold text-gray-900 mb-2">Start Gateway</h3>
+                        <p class="text-gray-600">Launch the secure gateway in front of vLLM</p>
+                    </div>
+                    
+                    <div class="text-center">
+                        <div class="w-16 h-16 bg-blue-600 rounded-full flex items-center justify-center mx-auto mb-4 text-white text-2xl font-bold">3</div>
+                        <h3 class="text-lg font-semibold text-gray-900 mb-2">Create Keys</h3>
+                        <p class="text-gray-600">Generate API keys for your clients</p>
+                    </div>
+                    
+                    <div class="text-center">
+                        <div class="w-16 h-16 bg-blue-600 rounded-full flex items-center justify-center mx-auto mb-4 text-white text-2xl font-bold">4</div>
+                        <h3 class="text-lg font-semibold text-gray-900 mb-2">Start Using</h3>
+                        <p class="text-gray-600">Clients access AI models securely</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Stats Section -->
+        <section class="py-24 bg-white">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-8 text-center">
+                    <div>
+                        <div class="text-4xl font-bold text-blue-600 mb-2">{{ stats.totalKeys | default(0) }}</div>
+                        <div class="text-gray-600">API Keys Created</div>
+                    </div>
+                    <div>
+                        <div class="text-4xl font-bold text-green-600 mb-2">{{ stats.activeKeys | default(0) }}</div>
+                        <div class="text-gray-600">Active Keys</div>
+                    </div>
+                    <div>
+                        <div class="text-4xl font-bold text-purple-600 mb-2">{{ stats.todayRequests | default(0) }}</div>
+                        <div class="text-gray-600">Today's Requests</div>
+                    </div>
+                    <div>
+                        <div class="text-4xl font-bold text-orange-600 mb-2">{{ stats.totalTokens | default(0) }}</div>
+                        <div class="text-gray-600">Tokens Used</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- CTA Section -->
+        <section class="py-24 bg-gradient-to-r from-blue-600 to-purple-600">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+                <h2 class="text-3xl font-bold text-white mb-4">Ready to Get Started?</h2>
+                <p class="text-xl text-blue-100 mb-8">Join the future of secure AI model access</p>
+                <div class="flex flex-col sm:flex-row gap-4 justify-center">
+                    <a href="/dashboard" class="bg-white text-blue-600 px-8 py-4 rounded-lg text-lg font-semibold hover:bg-gray-100 transition-all">
+                        <i class="fas fa-rocket mr-2"></i>
+                        Launch Now
+                    </a>
+                    <a href="/docs" class="border-2 border-white text-white px-8 py-4 rounded-lg text-lg font-semibold hover:bg-white hover:text-blue-600 transition-all">
+                        <i class="fas fa-book mr-2"></i>
+                        View Docs
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer class="bg-gray-900 text-white py-12">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+                    <div>
+                        <div class="flex items-center space-x-2 mb-4">
+                            <div class="w-8 h-8 bg-gradient-to-r from-blue-600 to-purple-600 rounded-lg flex items-center justify-center">
+                                <i class="fas fa-robot text-white"></i>
+                            </div>
+                            <span class="text-xl font-bold">vLLM Gateway</span>
+                        </div>
+                        <p class="text-gray-400">Secure, scalable, and production-ready AI model access.</p>
+                    </div>
+                    
+                    <div>
+                        <h3 class="text-lg font-semibold mb-4">Quick Links</h3>
+                        <ul class="space-y-2">
+                            <li><a href="/dashboard" class="text-gray-400 hover:text-white transition-colors">Dashboard</a></li>
+                            <li><a href="/api/keys" class="text-gray-400 hover:text-white transition-colors">API Keys</a></li>
+                            <li><a href="/chat" class="text-gray-400 hover:text-white transition-colors">Chat</a></li>
+                        </ul>
+                    </div>
+                    
+                    <div>
+                        <h3 class="text-lg font-semibold mb-4">Resources</h3>
+                        <ul class="space-y-2">
+                            <li><a href="/docs" class="text-gray-400 hover:text-white transition-colors">Documentation</a></li>
+                            <li><a href="/api/docs" class="text-gray-400 hover:text-white transition-colors">API Reference</a></li>
+                            <li><a href="#" class="text-gray-400 hover:text-white transition-colors">Support</a></li>
+                        </ul>
+                    </div>
+                    
+                    <div>
+                        <h3 class="text-lg font-semibold mb-4">Connect</h3>
+                        <div class="flex space-x-4">
+                            <a href="#" class="text-gray-400 hover:text-white transition-colors">
+                                <i class="fab fa-github text-xl"></i>
+                            </a>
+                            <a href="#" class="text-gray-400 hover:text-white transition-colors">
+                                <i class="fab fa-twitter text-xl"></i>
+                            </a>
+                            <a href="#" class="text-gray-400 hover:text-white transition-colors">
+                                <i class="fab fa-linkedin text-xl"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="border-t border-gray-800 mt-8 pt-8 text-center text-gray-400">
+                    <p>&copy; 2024 vLLM Gateway. Built with ❤️ for the AI community.</p>
+                </div>
+            </div>
+        </footer>
+    </div>
+
+    <script>
+        const { createApp } = Vue
+
+        createApp({
+            data() {
+                return {
+                    stats: {
+                        totalKeys: 0,
+                        activeKeys: 0,
+                        todayRequests: 0,
+                        totalTokens: 0
+                    }
+                }
+            },
+            async mounted() {
+                await this.loadStats()
+            },
+            methods: {
+                async loadStats() {
+                    try {
+                        const response = await fetch('/api/v1/keys')
+                        if (response.ok) {
+                            const data = await response.json()
+                            this.stats.totalKeys = data.keys.length
+                            this.stats.activeKeys = data.keys.filter(k => k.is_active).length
+                            
+                            let todayRequests = 0
+                            let totalTokens = 0
+                            data.keys.forEach(key => {
+                                todayRequests += key.daily_usage || 0
+                                totalTokens += key.daily_usage || 0
+                            })
+                            
+                            this.stats.todayRequests = todayRequests
+                            this.stats.totalTokens = totalTokens
+                        }
+                    } catch (error) {
+                        console.error('Error loading stats:', error)
+                    }
+                }
+            }
+        }).mount('#app')
+    </script>
+</body>
+</html>
